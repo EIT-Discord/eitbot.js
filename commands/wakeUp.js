@@ -45,7 +45,7 @@ module.exports = {
         }
         await interaction.reply(
             {
-                content: utils.codeBlock(`Tried to wake up ${targetMember.member.username}!`),
+                content: utils.codeBlock(`Tried to wake up ${targetMember.user.username}!`),
                 ephemeral: true
             });
     },

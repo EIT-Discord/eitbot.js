@@ -10,11 +10,12 @@ module.exports = {
                 .setDescription('Name of the role!')
                 .setRequired(true)),
 
-    async execute(interaction) {
+    async execute(interaction)
+    {
         const role = interaction.options.getRole('role');
 
-        if (Array.from(interaction.member.roles.cache.values(), roles =>
-            roles.id).includes(role.id))
+        if (Array.from(interaction.member.roles.cache.values(),
+                roles => roles.id).includes(role.id))
         {
             await interaction.member.roles.remove(role)
                 .then(await interaction.reply({content: utils.codeBlock(`Role ${role} successfully removed!`),

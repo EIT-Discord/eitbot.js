@@ -8,7 +8,8 @@ module.exports = {
             option.setName('presence')
                 .setDescription('The new presence!')
                 .setRequired(true)),
-    async execute(interaction) {
+    async execute(interaction)
+    {
         const client = interaction.client;
         const presence = interaction.options.getString('presence');
         await client.user.setPresence({ activities: [{ name: presence }], status: 'online' })

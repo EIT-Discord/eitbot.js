@@ -26,8 +26,8 @@ module.exports = {
         }
         catch (DiscordApiError)
         {
-            await interaction.reply(
-                {
+            await interaction.reply
+            ({
                     content: utils.codeBlock(`Your target must be connected to a voice channel!`),
                     ephemeral: true
                 });
@@ -43,8 +43,8 @@ module.exports = {
             }
             catch (DiscordApiError){}
         }
-        await interaction.reply(
-            {
+        await interaction.reply
+            ({
                 content: utils.codeBlock(`Tried to wake up ${targetMember.user.username}!`),
                 ephemeral: true
             });

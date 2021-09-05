@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const utils = require('../utils.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,12 +17,12 @@ module.exports = {
         if (Array.from(guild.roles.cache.values(), role_name =>
             role_name.name.toLowerCase()).includes(name.toLowerCase()))
         {
-            await interaction.reply({content: `Role ${name} already existing!`, ephemeral: true});
+            await interaction.reply({content: utils.codeBlock(`Role ${name} already existing!`), ephemeral: true});
             return;
         }
 
         await guild.roles.create({name: name})
-            .then(await interaction.reply({content: `Role ${name} successfully created!`, ephemeral: true}))
+            .then(await interaction.reply({content: utils.codeBlock(`Role ${name} successfully created!`), ephemeral: true}))
             .catch(console.error);
     },
 };

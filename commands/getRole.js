@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const utils = require('../utils.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,13 +17,15 @@ module.exports = {
             roles.id).includes(role.id))
         {
             await interaction.member.roles.remove(role)
-                .then(await interaction.reply({content: `Role ${role} successfully removed!`, ephemeral: true}))
+                .then(await interaction.reply({content: utils.codeBlock(`Role ${role} successfully removed!`),
+                    ephemeral: true}))
                 .catch(console.error);
         }
         else
         {
             await interaction.member.roles.add(role)
-                .then(await interaction.reply({content: `Role ${role} successfully assigned!`, ephemeral: true}))
+                .then(await interaction.reply({content: utils.codeBlock(`Role ${role} successfully assigned!`),
+                    ephemeral: true}))
                 .catch(console.error);
         }
 

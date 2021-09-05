@@ -12,7 +12,7 @@ module.exports = {
         const client = interaction.client;
         const presence = interaction.options.getString('presence');
         await client.user.setPresence({ activities: [{ name: presence }], status: 'online' })
-            .then(await interaction.reply(`Presence set to ${presence}`))
+            .then(await interaction.reply({content: `Presence set to ${presence}`, ephemeral: true}))
             .catch(console.error);
     },
 };

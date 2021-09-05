@@ -16,12 +16,12 @@ module.exports = {
         if (Array.from(guild.roles.cache.values(), role_name =>
             role_name.name.toLowerCase()).includes(name.toLowerCase()))
         {
-            await interaction.reply(`Role ${name} already existing!`);
+            await interaction.reply({content: `Role ${name} already existing!`, ephemeral: true});
             return;
         }
 
         await guild.roles.create({name: name})
-            .then(await interaction.reply(`Role ${name} successfully created!`))
+            .then(await interaction.reply({content: `Role ${name} successfully created!`, ephemeral: true}))
             .catch(console.error);
     },
 };

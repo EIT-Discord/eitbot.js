@@ -8,6 +8,7 @@ module.exports = {
             option.setName('role')
                 .setDescription('Name of the role!')
                 .setRequired(true)),
+
     async execute(interaction) {
         const role = interaction.options.getRole('role');
 
@@ -15,13 +16,13 @@ module.exports = {
             roles.id).includes(role.id))
         {
             await interaction.member.roles.remove(role)
-                .then(await interaction.reply(`Role ${role} successfully removed!`))
+                .then(await interaction.reply({content: `Role ${role} successfully removed!`, ephemeral: true}))
                 .catch(console.error);
         }
         else
         {
             await interaction.member.roles.add(role)
-                .then(await interaction.reply(`Role ${role} successfully assigned!`))
+                .then(await interaction.reply({content: `Role ${role} successfully assigned!`, ephemeral: true}))
                 .catch(console.error);
         }
 

@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction) {
         const role = interaction.options.getRole('role');
 
-        if (Array.from(interaction.guild.roles.cache.values(), roles =>
+        if (Array.from(interaction.member.roles.cache.values(), roles =>
             roles.id).includes(role.id))
         {
             await interaction.member.roles.remove(role)

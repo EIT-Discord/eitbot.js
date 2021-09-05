@@ -7,7 +7,7 @@ bin-release/
 # Other files and folders
 .settings/
 .idea/
-.node_modules/
+node_modules/
 
 # Executables
 *.swf
@@ -21,4 +21,6 @@ bin-release/
 config.json
 jsbot.iml
 package-lock.json
+package.json
+config.json
 package.json

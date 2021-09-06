@@ -14,12 +14,6 @@ module.exports = {
         const row = new MessageActionRow()
             .addComponents(testButton.data);
 
-
-        const embed = new MessageEmbed()
-            .setTitle('Some title')
-            .setDescription('Description after the edit')
-            .addField('Inline field title', 'Some value here', true);
-
         await interaction.reply(
             {
                 embeds: [testEmbed.data],

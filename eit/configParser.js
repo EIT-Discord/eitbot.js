@@ -1,4 +1,4 @@
-const configFile = require('./config.json');
+const configFile = require('./guildConfig.json');
 const {Semester, Group} = require("./classes");
 const {guildId} = require("../config.json");
 

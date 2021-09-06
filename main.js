@@ -4,6 +4,9 @@ require('./deploy-commands.js');
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
+const {initParseEitConfig} = require('./eit/configParser')
+
+
 
 // Create a new client instance
 const client = new Client(
@@ -21,6 +24,9 @@ client.commands = new Collection();
 client.buttons = new Map();
 client.menus = new Map();
 
+client.semesters = new Map();
+
+
 for (const file of eventFiles)
 {
     const event = require(`./events/${file}`);
@@ -33,6 +39,7 @@ for (const file of eventFiles)
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
+
 
 for (const file of commandFiles)
 {
@@ -52,4 +59,7 @@ for (const file of menuFiles)
     client.menus.set(menu.ID, menu);
 }
 // Login to Discord with your client's token
-client.login(token);
+client.login(token)
+
+initParseEitConfig(client);
+

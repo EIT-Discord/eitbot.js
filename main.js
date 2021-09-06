@@ -12,25 +12,14 @@ const client = new Client(
         partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     });
 
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+const menuFiles = fs.readdirSync('./menus').filter(file => file.endsWith('.js'));
+
 client.commands = new Collection();
 client.buttons = new Map();
 client.menus = new Map();
-
-
-// Fetches all commands
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles)
-{
-    const command = require(`./commands/${file}`);
-    // Set a new item in the Collection
-    // With the key as the command name and the value as the exported module
-    client.commands.set(command.data.name, command);
-}
-
-
-// Fetches all events
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles)
 {
@@ -45,25 +34,22 @@ for (const file of eventFiles)
     }
 }
 
-// Fetches all buttons
-const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+for (const file of commandFiles)
+{
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.data.name, command);
+}
 
-for (const file of buttonFiles) {
+for (const file of buttonFiles)
+{
     const button = require(`./buttons/${file}`);
-    // Set a new item in the Collection
-    // With the key as the command name and the value as the exported module
     client.buttons.set(button.ID, button);
 }
 
-// Fetches all menus
-const menuFiles = fs.readdirSync('./menus').filter(file => file.endsWith('.js'));
-
-for (const file of menuFiles) {
+for (const file of menuFiles)
+{
     const menu = require(`./menus/${file}`);
-    // Set a new item in the Collection
-    // With the key as the command name and the value as the exported module
     client.menus.set(menu.ID, menu);
 }
-
 // Login to Discord with your client's token
 client.login(token);

@@ -47,6 +47,6 @@ module.exports = {
             ({
                 content: utils.codeBlock(`Tried to wake up ${targetMember.user.username}!`),
                 ephemeral: true
-            });
+            }).catch(console.error);
     },
 };

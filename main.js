@@ -13,7 +13,8 @@ const client = new Client(
     });
 
 client.commands = new Collection();
-client.buttons = new Collection();
+client.buttons = new Map();
+client.menus = new Map();
 
 
 // Fetches all commands
@@ -51,7 +52,17 @@ for (const file of buttonFiles) {
     const button = require(`./buttons/${file}`);
     // Set a new item in the Collection
     // With the key as the command name and the value as the exported module
-    client.buttons.set(button.data.name, button);
+    client.buttons.set(button.ID, button);
+}
+
+// Fetches all menus
+const menuFiles = fs.readdirSync('./menus').filter(file => file.endsWith('.js'));
+
+for (const file of menuFiles) {
+    const menu = require(`./menus/${file}`);
+    // Set a new item in the Collection
+    // With the key as the command name and the value as the exported module
+    client.menus.set(menu.ID, menu);
 }
 
 // Login to Discord with your client's token

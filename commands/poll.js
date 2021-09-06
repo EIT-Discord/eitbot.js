@@ -3,11 +3,11 @@ const utils = require('../utils.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('reactiontest')
+        .setName('poll')
         .setDescription('Replies with Pong!'),
     async execute(interaction)
     {
-        await interaction.reply({content: utils.codeBlock('Ping!')})
-            .fetch('MessageID');
+        const collector = message.createMessageComponentCollector({ componentType: 'BUTTON', time: 15000 });
+        await interaction.reply({content: utils.codeBlock('Ping!'), ephemeral: true});
     },
 };

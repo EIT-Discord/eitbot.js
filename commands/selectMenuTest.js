@@ -1,24 +1,18 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
-const testButton = require('../buttons/testButton');
+const testMenu = require('../menus/testMenu');
 const testEmbed = require('../embeds/testEmbed');
 
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('embedtest')
+        .setName('menutest')
         .setDescription('Replies with Pong!'),
 
     async execute(interaction)
     {
         const row = new MessageActionRow()
-            .addComponents(testButton.data);
-
-
-        const embed = new MessageEmbed()
-            .setTitle('Some title')
-            .setDescription('Description after the edit')
-            .addField('Inline field title', 'Some value here', true);
+            .addComponents(testMenu.data);
 
         await interaction.reply(
             {

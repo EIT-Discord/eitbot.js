@@ -1,13 +1,13 @@
 {
-  "name": "untitled",
-  "version": "1.0.0",
+  "name": "eitbot.js",
+  "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/YannicBreiting/eitbot.js.git"

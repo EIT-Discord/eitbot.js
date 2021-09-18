@@ -1,13 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { codeBlock } = require('../utils.js');
-const { guildId } = require('../config.json');
-
-const setupEmbed = require('../embeds/setupEmbed');
-const { MessageActionRow } = require('discord.js');
-const roleSelectMenu = require('../menus/roleSelectMenu');
-const studentSelectMenu = require("../menus/studentSelectMenu")
-const {Setup} = require("../eit/setup");
+const { Setup } = require("../eit/setup");
 
 
 module.exports = {
@@ -60,15 +54,17 @@ module.exports = {
     },
 };
 
+
 const setup = async (interaction) => {
     if (interaction.guild.client.eit.activeSetups.has(interaction.member.user.id)) {
         interaction.reply('Es gibt bereits ein aktives Setup-Event!');
         return;
     }
 
-    interaction.guild.client.eit.activeSetups.set(interaction.member.user.id, new Setup(interaction.member.user).init())
+    interaction.guild.client.eit.activeSetups.set(interaction.member.user.id, new Setup(interaction.member.user))
     interaction.reply('Test');
 }
+
 
 const changeNickName = async (interaction) => {
     const name = interaction.options.getString('name');
@@ -82,8 +78,8 @@ const changeNickName = async (interaction) => {
         .catch();
 }
 
-const modMail = async interaction => {
 
+const modMail = async interaction => {
     const text = interaction.options.getString('reason');
 
     const filterMods = member => {
@@ -97,6 +93,5 @@ const modMail = async interaction => {
                 .then(members => members.forEach(filterMods)))
         .catch();
     }
-
 }
 

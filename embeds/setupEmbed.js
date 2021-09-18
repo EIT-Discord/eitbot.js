@@ -1,5 +1,6 @@
 const {MessageEmbed} = require("discord.js");
 
+
 module.exports = {
     start: new MessageEmbed()
         .setTitle("Setup")
@@ -15,4 +16,3 @@ module.exports = {
                         "darfst du auch nur deinen Vornamen oder einen Spitznamen benutzen._")
         .addField('Inline field title', 'Some value here', true)
 }
-

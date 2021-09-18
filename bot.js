@@ -31,37 +31,32 @@ client.menus = new Map();
 client.eit = eit;
 
 
-for (const file of eventFiles)
-{
+for (const file of eventFiles) {
     const event = require(`./events/${file}`);
-    if (event.once)
-    {
+    if (event.once) {
         client.once(event.name, (...args) => event.execute(...args));
     }
-    else
-    {
+    else {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
 
 
-for (const file of commandFiles)
-{
+for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.data.name, command);
 }
 
-for (const file of buttonFiles)
-{
+for (const file of buttonFiles) {
     const button = require(`./buttons/${file}`);
     client.buttons.set(button.ID, button);
 }
 
-for (const file of menuFiles)
-{
+for (const file of menuFiles) {
     const menu = require(`./menus/${file}`);
     client.menus.set(menu.ID, menu);
 }
+
 // Login to Discord with your client's token
 client.login(token)
 

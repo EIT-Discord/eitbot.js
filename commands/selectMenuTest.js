@@ -12,7 +12,7 @@ module.exports = {
     async execute(interaction)
     {
         const row = new MessageActionRow()
-            .addComponents(testMenu.data);
+            .addComponents(testMenu.testmenu);
 
         await interaction.reply(
             {

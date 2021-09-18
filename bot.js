@@ -3,16 +3,20 @@ require('./deploy-commands.js');
 
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+const { token, guildId } = require('./config.json');
 const {initParseEitConfig} = require('./eit/configParser')
-
+const {eit} = require("./eit/classes");
 
 
 // Create a new client instance
-const client = new Client(
-    {
-        intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
-        partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+let client = new Client({
+        fetchAllMembers: true,
+        intents: [
+            Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+            Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES,
+            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS],
+
+        partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER']
     });
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -24,7 +28,7 @@ client.commands = new Collection();
 client.buttons = new Map();
 client.menus = new Map();
 
-client.semesters = new Map();
+client.eit = eit;
 
 
 for (const file of eventFiles)

@@ -1,3 +1,13 @@
+const eit =
+{
+    semesters: new Map(),
+    roles: new Map(),
+    channels: new Map(),
+    activeSetups: new Map()
+}
+
+
+
 class Semester
 {
     constructor(year, channel, groups)
@@ -23,4 +33,4 @@ class Group
     }
 }
 
-module.exports = {Semester, Group}
+module.exports = {Semester, Group, eit}

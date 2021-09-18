@@ -1,5 +1,5 @@
 {
-    "roles": ["Gast", "Student"],
+    "roles": ["Gast", "Student", "Professor", "Interessent", "Moderator"],
 
     "channels": ["kalender", "hm-feed", "botlog"],
 

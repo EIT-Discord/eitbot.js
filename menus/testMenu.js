@@ -1,12 +1,12 @@
 const {MessageSelectMenu} = require("discord.js");
 const utils = require("../utils.js");
 
-const name = 'testmenu'
+
 
 module.exports = {
-    ID: name,
-    data: new MessageSelectMenu()
-            .setCustomId(name)
+    ID: 'testmenu',
+    testmenu: new MessageSelectMenu()
+            .setCustomId('testmenu')
             .setPlaceholder('Nothing selected')
             .addOptions([
                 {

@@ -1,16 +1,17 @@
+const fs = require('fs');
+
+const { Client, Collection, Intents } = require('discord.js');
+
+const {eit} = require("./eit/classes");
+const { token } = require('./config.json');
+const {initParseEitConfig} = require('./eit/configParser')
+
 // Deploys all commands which may changed
 require('./deploy-commands.js');
-
-const fs = require('fs');
-const { Client, Collection, Intents } = require('discord.js');
-const { token, guildId } = require('./config.json');
-const {initParseEitConfig} = require('./eit/configParser')
-const {eit} = require("./eit/classes");
 
 
 // Create a new client instance
 let client = new Client({
-        fetchAllMembers: true,
         intents: [
             Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
             Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES,

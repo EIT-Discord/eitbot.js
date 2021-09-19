@@ -82,6 +82,38 @@ module.exports = {
             },
         ]),
 
+    vertieftesStudium: new MessageSelectMenu()
+        .setCustomId('setupMenu')
+        .setPlaceholder('Keine Auswahl getroffen!')
+        .addOptions([
+            {
+                label: '6. Semester',
+                value: '6. Semester',
+            },
+            {
+                label: '7. Semester',
+                value: '7. Semester',
+            },
+        ]),
+
+    studiumsRichtung: new MessageSelectMenu()
+        .setCustomId('setupMenu')
+        .setPlaceholder('Keine Auswahl getroffen!')
+        .addOptions([
+            {
+                label: 'Informationstechnik',
+                value: '1. Semester',
+            },
+            {
+                label: 'Erneuerbare Energien',
+                value: 'Erneuerbare Energien',
+            },
+            {
+                label: 'Elektromobilität',
+                value: 'Elektromobilität',
+            },
+        ]),
+
     async execute(interaction) {
         const choice = interaction.values[0];
         const setup = interaction.client.eit.activeSetups.get(interaction.user.id)

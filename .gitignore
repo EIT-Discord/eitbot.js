@@ -23,3 +23,5 @@ jsbot.iml
 package-lock.json
 package.json
 
+calendar/token.json
+calendar/credentials.json

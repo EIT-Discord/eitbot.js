@@ -16,14 +16,14 @@ module.exports = {
                         Abhänging deiner Auswahl werden dir die Bereiche vorgeschlagen, 
                         die für dich am interessantesten sind!`),
 
-    gastSelect: new MessageEmbed()
-        .setTitle("Setup")
-        .setDescription(``),
-
     studentSelect: new MessageEmbed()
         .setTitle("Setup")
         .setDescription(`Es freut uns, dass ein weiter Student auf diesen Server gefunden hat!
                         Wähle jetzt den Studienabschnitt aus, der auf dich zutrifft!`),
+
+    semesterSelect: new MessageEmbed()
+        .setTitle("Setup")
+        .setDescription(`Wähle jetzt dein Semester aus!`),
 
     nameSelect: new MessageEmbed()
         .setTitle("Setup")

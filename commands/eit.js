@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const { codeBlock } = require('../utils.js');
 const { Setup } = require("../eit/setup");
+
 
 
 module.exports = {
@@ -73,10 +73,9 @@ const changeNickName = async (interaction) => {
     };
 
     if (filter(name)){
-        try{
+        try {
             await interaction.member.setNickname(name)
-            interaction.reply(
-                {
+            interaction.reply({
                     content: `Dein Name wurde erfolgreich zu ${name} geändert!`,
                     ephemeral: true
                 })
@@ -86,30 +85,26 @@ const changeNickName = async (interaction) => {
         }
     }
     else {
-        interaction.reply(
-            {
+        interaction.reply({
                 content: `Es gab ein Problem beim Ändern deines Nicknamens! 
                 Bitte kontaktiere die Serveradmins um das Problem zu lösen!`,
                 ephemeral: true
-            })
+        })
     }
-
 }
 
-
 const modMail = async interaction => {
-    const text = interaction.options.getString('reason');
+    let text = interaction.options.getString('reason');
+    const moderator = interaction.client.eit.roles.get('Moderator').id;
 
-    const filterMods = member => {
-        if (member.roles.some(role => role.id === interaction.client.eit.roles.get('Moderator').id)) {
-            member.send(text)
-        }
-    }
-    const returnMember = interaction => {
-        interaction.client.guilds.fetch(interaction.guildId)
-            .then(guild => guild.members.fetch()
-                .then(members => members.forEach(filterMods)))
-        .catch();
-    }
+    await interaction.client.fetchEitMember()
+        .then(members => members.forEach(async member => {
+            if (member.roles.includes(moderator)) {
+                await interaction.guild.members.fetch(member.user.id)
+                    .then(async member => await member.user.send(text))
+            }
+        }))
+
+    await interaction.reply({content: `Dein Anliegen wurde an die Moderatoren weitergeleitet`, ephemeral: true})
 }
 

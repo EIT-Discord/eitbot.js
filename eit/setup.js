@@ -8,7 +8,6 @@ class Setup {
         this.guild = member.guild;
         this.user = member.user;
         this.client = this.guild.client;
-        this.state = 'init'
         this.init();
     }
 
@@ -17,41 +16,42 @@ class Setup {
     }
 
     async choice (choice) {
-        if (this.state === 'init'){
-            await this.removeRoles()
-            await this.addRole(choice)
-            this.state = 'roleSelected'
-        }
-
         switch (choice) {
             case 'Student':
                 await this.sendMenu(setupMenu.studentenAuswahl, [setupEmbed.studentSelect]);
+                await this.removeRoles();
+                await this.addRole(choice);
                 break;
 
             case 'Gast':
             case 'Professor':
             case 'Interessent':
+            case 'Master':
+            case 'Alumni':
                 await this.changeName([setupEmbed.nameSelect]);
+                await this.removeRoles();
+                await this.addRole(choice);
                 this.removeSetupEvent()
                 break;
 
             case 'Grundstudium':
-                await this.sendMenu(setupMenu.grundStudium);
-                break;
-
-            case 'Praxissemester':
-                await this.changeName([setupEmbed.nameSelect]);
-                this.removeSetupEvent()
+                await this.sendMenu(setupMenu.grundStudium, [setupEmbed.semesterSelect]);
                 break;
 
             case 'Vertieftes Studium':
-                await this.sendMenu(setupMenu.vertieftesStudium);
+                await this.sendMenu(setupMenu.vertieftesStudium, [setupEmbed.semesterSelect]);
                 break;
 
-            case 'Master':
-                break;
-
-            case 'Alumni':
+            case '1. Semester':
+            case '2. Semester':
+            case '3. Semester':
+            case '4. Semester':
+            case '5. Semester':
+            case '6. Semester':
+            case '7. Semester':
+                await this.changeName([setupEmbed.nameSelect]);
+                await this.addRole(choice);
+                this.removeSetupEvent()
                 break;
         }
     }
@@ -61,7 +61,6 @@ class Setup {
             .addComponents(menu)
 
         await this.user.send({
-            content: '.',
             components: [row],
             embeds: embed
         })
@@ -69,9 +68,9 @@ class Setup {
 
     async changeName(embed) {
 
-        const filter = m => ((/[A-zÀ-ú\s]/).test(m.content)) && m.content.length < 32 && m.content.length > 3;
+        const filter = m => (/[A-z À-ú]/).test(m.content) && m.content.length < 32 && m.content.length > 3;
 
-        await this.user.send({content: '.', embeds: embed});
+        await this.user.send({embeds: embed});
 
         const name = await this.user.dmChannel.awaitMessages({filter, max: 1})
             .then(m => {return m.first().content});
@@ -81,20 +80,29 @@ class Setup {
             this.user.send(`Dein Nickname wurde erfolgreich zu ${name} geändert!`)
         }
         catch (err){
-            this.user.send(
-                `Es gab ein Problem beim Ändern deines Nicknamens!\n
-                 Bitte kontaktiere die Serveradmins um das Problem zu lösen!`)
+            this.user.send(`Es gab ein Problem beim Ändern deines Namens!\n` +
+                `Bitte kontaktiere die Serveradmins um das Problem zu lösen!`)
             console.log(err);
         }
     }
 
     async addRole(role) {
-        await this.member.roles.add(this.client.eit.roles.get(role))
+        try{
+            await this.member.roles.add(this.client.eit.roles.get(role))
+        }
+        catch (err){
+            console.log(err);
+        }
     }
 
     async removeRoles() {
-        Array.from(this.client.eit.roles.values())
-            .forEach(role => this.member.roles.remove(role))
+        try{
+            Array.from(this.client.eit.roles.values())
+                .forEach(role => this.member.roles.remove(role));
+        }
+        catch (err){
+            console.log(err);
+        }
     }
 
     removeSetupEvent () {

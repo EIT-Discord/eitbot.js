@@ -4,8 +4,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const { clientId, guildId, token } = require('./config.json');
-const {initParseEitConfig} = require('./eit/configParser')
+const { clientId, guildId, token } = require('./src/config.json');
+const {initParseEitConfig} = require('./src/eit/configParser')
 
 
 // Create a new client instance
@@ -38,13 +38,13 @@ client.eit = {channels: new Map(), roles: new Map(), activeSetups: new Map()};
 let commands = [];
 
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
+    const command = require(`./src/commands/${file}`);
     client.commands.set(command.data.name, command);
     commands.push(command.data.toJSON());
 }
 
 for (let file of eventFiles) {
-    let event = require(`./events/${file}`);
+    let event = require(`./src/events/${file}`);
     if (event.once) {
         client.once(event.name, (...args) => event.execute(...args));
     }
@@ -54,12 +54,12 @@ for (let file of eventFiles) {
 }
 
 for (let file of buttonFiles) {
-    let button = require(`./buttons/${file}`);
+    let button = require(`./src/buttons/${file}`);
     client.buttons.set(button.ID, button);
 }
 
 for (let file of menuFiles) {
-    let menu = require(`./menus/${file}`);
+    let menu = require(`./src/menus/${file}`);
     client.menus.set(menu.ID, menu);
 }
 

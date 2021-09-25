@@ -13,13 +13,8 @@ module.exports = {
                 value: 'Grundstudium',
             },
             {
-                label: 'Praxissemester',
-                description: 'Für Student:innen im Praxissemester!',
-                value: 'Praxissemester',
-            },
-            {
                 label: 'Vertieftes Studium',
-                description: 'Für Student:innen im 6. bis 7. Semester!',
+                description: 'Für Student:innen im 5. bis 7. Semester!',
                 value: 'Vertieftes Studium',
             },
             {
@@ -87,6 +82,10 @@ module.exports = {
         .setPlaceholder('Keine Auswahl getroffen!')
         .addOptions([
             {
+                label: '5. Semester',
+                value: '5. Semester',
+            },
+            {
                 label: '6. Semester',
                 value: '6. Semester',
             },
@@ -96,31 +95,21 @@ module.exports = {
             },
         ]),
 
-    studiumsRichtung: new MessageSelectMenu()
-        .setCustomId('setupMenu')
-        .setPlaceholder('Keine Auswahl getroffen!')
-        .addOptions([
-            {
-                label: 'Informationstechnik',
-                value: '1. Semester',
-            },
-            {
-                label: 'Erneuerbare Energien',
-                value: 'Erneuerbare Energien',
-            },
-            {
-                label: 'Elektromobilität',
-                value: 'Elektromobilität',
-            },
-        ]),
-
     async execute(interaction) {
         const choice = interaction.values[0];
         const setup = interaction.client.eit.activeSetups.get(interaction.user.id)
 
-        await interaction.update({
-            content: `${choice} wurde ausgewählt!`,
-            components: []
-        }).then(setup.choice(choice))
+        if (setup === undefined) {
+            await interaction.update({
+                content: `Diese Setupinstanz ist ungültig!`,
+                components: []
+            })
+        }
+        else {
+            await interaction.update({
+                content: `${choice} wurde ausgewählt!`,
+                components: []
+            }).then(setup.choice(choice))
+        }
     }
 }

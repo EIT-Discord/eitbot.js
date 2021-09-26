@@ -9,7 +9,7 @@ module.exports = {
         .setDescription('Replies with Pong!')
         .addIntegerOption(option =>
             option.setName('number')
-                .setDescription('Number of questions: 1-5 ')
+                .setDescription('Number of questions: 2-5')
                 .setRequired(true))
         .addChannelOption(option =>
             option.setName('channel')
@@ -17,75 +17,92 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        if (interaction.guild.client.eit.polls.has(interaction.member.user.id)) {
+            interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});
+            return;
+        }
         let questionNumber = interaction.options.getInteger('number');
+        if (questionNumber < 1 && questionNumber < 5){
+            interaction.reply({content: 'Invalid number of questions!', ephemeral: true});
+            return;
+        }
+
         let targetChannel = interaction.options.getChannel('channel');
+        if (!targetChannel.isText()) {
+            interaction.reply({content: 'Not a valid text channel!', ephemeral: true});
+            return;
+        }
         let user = interaction.member.user;
 
-        await interaction.reply({content: 'Poll creation has been started!', ephemeral: true})
-        new Poll(user, questionNumber, targetChannel)
+        let poll = new Poll(interaction.client, user, questionNumber, targetChannel)
+        interaction.guild.client.eit.activeSetups.set(user.id, poll);
+        await interaction.reply({content: 'Poll creation has been started!', ephemeral: true});
+        await poll.init();
     }
 }
 
 class Poll {
-    memberCache = [];
-    questionCounter = new Map;
+    poll = {question: '', answers: new Map(), votes: {count: 0, answerCount: new Map()}}
     pollMenu;
-    pollEmbed = {};
-    menuFields = [];
 
-    constructor(user, questionNumber, targetChannel, duration = 24) {
+    constructor(client, user, questionNumber, targetChannel, duration = 30000) {
+        this.client = client;
         this.user = user;
         this.questionNumber = questionNumber;
         this.targetChannel = targetChannel;
         this.duration = duration;
-
-        this.init();
     }
 
     async init () {
         await this.fetchQuestion()
         await this.fetchAnswers()
-        await this.verifyPoll() && await this.startPoll()
+        await this.verifyPoll()
     }
 
     async fetchQuestion () {
         await this.user.send('What is the question you want to ask?');
         await this.user.dmChannel.awaitMessages({max: 1})
-            .then(collected => {this.pollEmbed.title = collected.first().content});
+            .then(collected => {this.poll.question = collected.first().content});
     }
 
     async fetchAnswers () {
-        let embedFields = [];
         await this.user.send('Now type the corresponding answers!');
 
         for (let i = 1; i <= this.questionNumber; i++) {
             await this.user.dmChannel.awaitMessages({max: 1})
                 .then(async collected => {
                     let answer = collected.first().content;
-                    this.menuFields.push({label: answer, value: answer});
-                    this.questionCounter.set(answer, 0)
-                    embedFields.push({name: `${i}. answer`, value: answer});
+                    this.poll.answers.set(i, answer);
+                    this.poll.votes.answerCount.set(answer, 0);
                     await this.user.send(`${answer} has been added!`)
                 });
         }
-        this.pollEmbed.fields = embedFields
     }
 
     async verifyPoll () {
         let buttonRow = new MessageActionRow()
             .addComponents(binaryButton.yesButton, binaryButton.noButton)
 
-        await this.user.send({content: 'Do you want to finish the poll creation?',components: [buttonRow], embeds: [this.pollEmbed]})
+        let embedFields = [];
+        let questionCount = 1;
+        for(let answer of this.poll.answers.values()){
+            embedFields.push({name: `${questionCount}. Frage`, value: answer})
+            questionCount += 1;
+        }
+
+        let pollEmbed = {title: this.poll.question, fields: embedFields}
+
+        await this.user.send({content: 'Do you want to finish the poll creation?',components: [buttonRow], embeds: [pollEmbed]})
         let collector = this.user.dmChannel.createMessageComponentCollector({ componentType: 'BUTTON'})
 
-        return collector.on('collect', async i => {
+        collector.once('collect', async i => {
             if (i.customId === 'yes') {
                 await i.update({ content: 'Your poll will be send to the target channel!', components: [] });
-                return true
+                await this.startPoll()
             }
             if (i.customId === 'no') {
                 await i.update({ content: 'Poll creation has been aborted!', components: [] });
-                return false
+                this.removePoll()
             }
         });
     }
@@ -93,36 +110,75 @@ class Poll {
     async startPoll () {
         this.constructMenu()
 
-        const collector = this.targetChannel.createMessageComponentCollector({componentType: 'SELECT_MENU'})
+        const collector = this.targetChannel.createMessageComponentCollector({componentType: 'SELECT_MENU', time: this.duration})
 
         let menuRow = new MessageActionRow()
             .addComponents(this.pollMenu)
 
-        this.targetChannel.send({components: [menuRow], embeds: [this.pollEmbed]})
+        let poll = this.targetChannel.send({components: [menuRow], embeds: [{title: this.poll.question}]})
 
         collector.on('collect', i => {
-
-            if (this.questionCounter.has(i.values[0]) && (!this.memberCache.includes(i.member.id))) {
-                this.memberCache.push(i.member.id)
-                this.questionCounter[i.customId] += 1
-                i.reply({content: `Danke für deine Antwort!`, ephemeral: true })
-            }
-            else {
-                i.reply({ content: `Du hast deine Antwort schon abgegeben!`, ephemeral: true });
-            }
+            i.reply({content: `Danke für deine Antwort!`, ephemeral: true })
         });
 
         collector.on('end', collected => {
-            console.log(`Collected ${collected.size} items`);
-        });
+            // collected.first().editReply({content: 'Die Umfrage wurde geschlossen!', components: []})
+            poll.then(message => message.delete())
+            this.verifyVotes(collected)
+            this.sendPollEmbed()
+        })
     }
 
     constructMenu () {
-        delete this.pollEmbed.fields
+        let menuFields = [];
+        for(let answer of this.poll.answers.values()){
+            menuFields.push({label: answer, value: answer})
+        }
+
         this.pollMenu = new MessageSelectMenu()
             .setPlaceholder('Keine Auswahl getroffen!')
             .setCustomId('poll')
-            .addOptions(this.menuFields)
+            .addOptions(menuFields)
+    }
+
+    async sendPollEmbed () {
+        let answerFields = []
+        let barNumber = 40;
+
+        answerFields.push({name: 'Anzahl der Teilnehmer', value: `${this.poll.votes.count}`})
+        for(let answer of this.poll.answers.values()){
+            let answerCount = this.poll.votes.answerCount.get(answer)
+            let percent = answerCount/this.poll.votes.count
+            let voteBar = Math.floor(percent * barNumber)
+            let answerBar = '▓'.repeat(voteBar) + '░'.repeat(barNumber - voteBar)
+            let voteString = (answerCount === 1) ? 'Stimme' : 'Stimmen'
+            answerFields.push({name: answer,
+                value: `${(percent*100).toFixed(2)}% - ${answerCount} ${voteString}\n ${answerBar}`})
+        }
+        let pollEmbed = {title: this.poll.question, fields: answerFields};
+        await this.targetChannel.send({embeds: [pollEmbed]})
+        this.removePoll()
+    }
+
+    verifyVotes (collected) {
+        let collectedVotes = Array.from(collected.values());
+        let countedVote = new Map()
+
+        for(let i = collectedVotes.length - 1; i >= 0; i--){
+            if(!countedVote.has(collectedVotes[i].user.id)){
+                countedVote.set(collectedVotes[i].user.id, collectedVotes[i]);
+            }
+        }
+        for(let vote of countedVote.values()){
+            let answer = vote.values[0];
+            let answerCount = this.poll.votes.answerCount.get(answer);
+            this.poll.votes.answerCount.set(answer, answerCount+1)
+            this.poll.votes.count += 1;
+        }
+    }
+
+    removePoll () {
+        this.client.eit.polls.delete(this.user.id)
     }
 }
 

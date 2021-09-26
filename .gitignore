@@ -18,11 +18,10 @@ node_modules/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
-config.json
+src/config.json
 jsbot.iml
 package-lock.json
-package.json
 
-calendar/token.json
-calendar/credentials.json
-config.json
+src/calendar/token.json
+src/calendar/credentials.json
+

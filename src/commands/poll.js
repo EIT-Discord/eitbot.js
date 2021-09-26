@@ -17,32 +17,41 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        // Check for existing polls
         if (interaction.guild.client.eit.polls.has(interaction.member.user.id)) {
             interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});
             return;
         }
+        // Check for valid amount of answers
         let questionNumber = interaction.options.getInteger('number');
         if (questionNumber < 1 && questionNumber < 5){
-            interaction.reply({content: 'Invalid number of questions!', ephemeral: true});
+            interaction.reply({content: 'Invalid number of answers!', ephemeral: true});
             return;
         }
-
+        // Check for valid text channel
         let targetChannel = interaction.options.getChannel('channel');
         if (!targetChannel.isText()) {
             interaction.reply({content: 'Not a valid text channel!', ephemeral: true});
             return;
         }
+        // Create new poll and add to map
         let user = interaction.member.user;
-
         let poll = new Poll(interaction.client, user, questionNumber, targetChannel)
         interaction.guild.client.eit.activeSetups.set(user.id, poll);
         await interaction.reply({content: 'Poll creation has been started!', ephemeral: true});
-        await poll.init();
     }
 }
 
 class Poll {
-    poll = {question: '', answers: new Map(), votes: {count: 0, answerCount: new Map()}}
+    data = {
+        question: '',
+        answers: new Map(),
+        votes: {
+            count: 0,
+            answerCount: new Map()
+        }
+    }
+
     pollMenu;
 
     constructor(client, user, questionNumber, targetChannel, duration = 30000) {
@@ -51,6 +60,8 @@ class Poll {
         this.questionNumber = questionNumber;
         this.targetChannel = targetChannel;
         this.duration = duration;
+
+        this.init();
     }
 
     async init () {
@@ -62,7 +73,7 @@ class Poll {
     async fetchQuestion () {
         await this.user.send('What is the question you want to ask?');
         await this.user.dmChannel.awaitMessages({max: 1})
-            .then(collected => {this.poll.question = collected.first().content});
+            .then(collected => {this.data.question = collected.first().content});
     }
 
     async fetchAnswers () {
@@ -72,8 +83,8 @@ class Poll {
             await this.user.dmChannel.awaitMessages({max: 1})
                 .then(async collected => {
                     let answer = collected.first().content;
-                    this.poll.answers.set(i, answer);
-                    this.poll.votes.answerCount.set(answer, 0);
+                    this.data.answers.set(i, answer);
+                    this.data.votes.answerCount.set(answer, 0);
                     await this.user.send(`${answer} has been added!`)
                 });
         }
@@ -85,12 +96,12 @@ class Poll {
 
         let embedFields = [];
         let questionCount = 1;
-        for(let answer of this.poll.answers.values()){
+        for(let answer of this.data.answers.values()){
             embedFields.push({name: `${questionCount}. Frage`, value: answer})
             questionCount += 1;
         }
 
-        let pollEmbed = {title: this.poll.question, fields: embedFields}
+        let pollEmbed = {title: this.data.question, fields: embedFields}
 
         await this.user.send({content: 'Do you want to finish the poll creation?',components: [buttonRow], embeds: [pollEmbed]})
         let collector = this.user.dmChannel.createMessageComponentCollector({ componentType: 'BUTTON'})
@@ -115,7 +126,7 @@ class Poll {
         let menuRow = new MessageActionRow()
             .addComponents(this.pollMenu)
 
-        let poll = this.targetChannel.send({components: [menuRow], embeds: [{title: this.poll.question}]})
+        let poll = this.targetChannel.send({components: [menuRow], embeds: [{title: this.data.question}]})
 
         collector.on('collect', i => {
             i.reply({content: `Danke für deine Antwort!`, ephemeral: true })
@@ -131,7 +142,7 @@ class Poll {
 
     constructMenu () {
         let menuFields = [];
-        for(let answer of this.poll.answers.values()){
+        for(let answer of this.data.answers.values()){
             menuFields.push({label: answer, value: answer})
         }
 
@@ -145,17 +156,17 @@ class Poll {
         let answerFields = []
         let barNumber = 40;
 
-        answerFields.push({name: 'Anzahl der Teilnehmer', value: `${this.poll.votes.count}`})
-        for(let answer of this.poll.answers.values()){
-            let answerCount = this.poll.votes.answerCount.get(answer)
-            let percent = answerCount/this.poll.votes.count
+        answerFields.push({name: 'Anzahl der Teilnehmer', value: `${this.data.votes.count}`})
+        for(let answer of this.data.answers.values()){
+            let answerCount = this.data.votes.answerCount.get(answer)
+            let percent = answerCount/this.data.votes.count
             let voteBar = Math.floor(percent * barNumber)
             let answerBar = '▓'.repeat(voteBar) + '░'.repeat(barNumber - voteBar)
             let voteString = (answerCount === 1) ? 'Stimme' : 'Stimmen'
             answerFields.push({name: answer,
                 value: `${(percent*100).toFixed(2)}% - ${answerCount} ${voteString}\n ${answerBar}`})
         }
-        let pollEmbed = {title: this.poll.question, fields: answerFields};
+        let pollEmbed = {title: this.data.question, fields: answerFields};
         await this.targetChannel.send({embeds: [pollEmbed]})
         this.removePoll()
     }
@@ -171,9 +182,9 @@ class Poll {
         }
         for(let vote of countedVote.values()){
             let answer = vote.values[0];
-            let answerCount = this.poll.votes.answerCount.get(answer);
-            this.poll.votes.answerCount.set(answer, answerCount+1)
-            this.poll.votes.count += 1;
+            let answerCount = this.data.votes.answerCount.get(answer);
+            this.data.votes.answerCount.set(answer, answerCount+1)
+            this.data.votes.count += 1;
         }
     }
 

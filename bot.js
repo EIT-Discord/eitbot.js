@@ -24,16 +24,16 @@ let client = new Client({
         partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER']
     });
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
-const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
-const menuFiles = fs.readdirSync('./menus').filter(file => file.endsWith('.js'));
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
+const buttonFiles = fs.readdirSync('./src/buttons').filter(file => file.endsWith('.js'));
+const menuFiles = fs.readdirSync('./src/menus').filter(file => file.endsWith('.js'));
 
 client.commands = new Collection();
 client.buttons = new Map();
 client.menus = new Map();
 
-client.eit = {channels: new Map(), roles: new Map(), activeSetups: new Map()};
+client.eit = {channels: new Map(), roles: new Map(), activeSetups: new Map(), polls: new Map()};
 
 let commands = [];
 

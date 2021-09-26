@@ -6,7 +6,7 @@ const binaryButton =  require("../buttons/binaryButton");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('poll')
-        .setDescription('Replies with Pong!')
+        .setDescription('Starts an interactive poll creation!')
         .addIntegerOption(option =>
             option.setName('number')
                 .setDescription('Number of questions: 2-5')

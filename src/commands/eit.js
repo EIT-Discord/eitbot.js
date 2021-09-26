@@ -30,7 +30,11 @@ module.exports = {
                 .addStringOption(option =>
                     option.setName('reason')
                         .setDescription('Vollständiger Name!')
-                        .setRequired(true))),
+                        .setRequired(true)))
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('semesterstart')
+                .setDescription('Sendet das Setupevent an jeden Studenten!')),
 
     async execute(interaction)
     {
@@ -50,6 +54,10 @@ module.exports = {
                 await modMail(interaction);
                 break;
 
+            case 'semesterstart':
+                await semesterStart(interaction);
+                break;
+
         }
     },
 };
@@ -63,7 +71,6 @@ const setup = async (interaction) => {
     interaction.guild.client.eit.activeSetups.set(interaction.member.user.id, new Setup(interaction.member));
     interaction.reply({content: `Unser Bot sollte dich persönlich angeschrieben haben!`, ephemeral: true});
 }
-
 
 const changeNickName = async (interaction) => {
     const name = interaction.options.getString('name');
@@ -106,5 +113,25 @@ const modMail = async interaction => {
         }))
 
     await interaction.reply({content: `Dein Anliegen wurde an die Moderatoren weitergeleitet`, ephemeral: true})
+}
+
+const semesterStart = async interaction => {
+    const student = interaction.client.eit.roles.get('Student').id;
+    let activeSetups = interaction.guild.client.eit.activeSetups;
+
+    // Fetch all guild members directly from discord via get request
+    await interaction.client.fetchEitMember()
+        .then(members => members.forEach(async member => {
+
+            // Fetch member objects if student role exist
+            if (member.roles.includes(student)) {
+                await interaction.guild.members.fetch(member.user.id)
+
+                    // Create setup event if none exist
+                    .then(async member =>
+                        !activeSetups.has(member.user.id) && activeSetups.set(member.user.id, new Setup(member)))
+            }
+        }))
+    await interaction.reply({content: `Es wurde ein Setupevent für jeden Studenten erstellt!`, ephemeral: true})
 }
 

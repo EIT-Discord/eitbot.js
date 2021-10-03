@@ -52,31 +52,22 @@ module.exports = {
 };
 
 const setup = async (interaction) => {
-    let member;
-    if(interaction.member === undefined){
-        member = await fetchMemberFromUser(interaction.client, interaction.user)
-        interaction.member === undefined && await interaction.reply(`Can not find your member object!`)
-    }
-    else{
-        member = interaction.member
-    }
+    let member = await memberCheck(interaction);
 
-    if (interaction.guild.client.eit.activeSetups.has(interaction.user.id)) {
-        interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});
+    if (member === undefined){
+        await interaction.reply(`Can not find your member object!`);
         return;
     }
-    interaction.guild.client.eit.activeSetups.set(member.id, new Setup(member));
+    interaction.client.eit.activeSetups.set(member.id, new Setup(member));
     interaction.reply({content: `Unser Bot sollte dich persönlich angeschrieben haben!`, ephemeral: true});
 }
 
 const changeNickName = async (interaction) => {
-    let member;
-    if(interaction.member === undefined){
-        member = await fetchMemberFromUser(interaction.client, interaction.user)
-        interaction.member === undefined && await interaction.reply(`Can not find your member object!`)
-    }
-    else{
-        member = interaction.member
+    let member = await memberCheck(interaction);
+
+    if (member === undefined){
+        await interaction.reply(`Can not find your member object!`);
+        return;
     }
     const name = interaction.options.getString('name');
 
@@ -106,7 +97,12 @@ const changeNickName = async (interaction) => {
 }
 
 const semesterStart = async interaction => {
+    let member = await memberCheck(interaction);
 
+    if (member === undefined){
+        await interaction.reply(`Can not find your member object!`);
+        return;
+    }
     if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
         interaction.reply({content: 'You do not have the required permissions!', ephemeral: true});
         return;
@@ -133,3 +129,13 @@ const semesterStart = async interaction => {
     await interaction.reply({content: `Es wurde ein Setupevent für jeden Studenten erstellt!`, ephemeral: true})
 }
 
+const memberCheck = async interaction => {
+    let member;
+    if (interaction.member === undefined){
+        member = await fetchMemberFromUser(interaction.client, interaction.user)
+    }
+    else {
+        member = interaction.member
+    }
+    return member;
+}

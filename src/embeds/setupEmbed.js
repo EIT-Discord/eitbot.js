@@ -14,7 +14,7 @@ module.exports = {
 
     studentSelect: new MessageEmbed()
         .setTitle("Studienabschnitt")
-        .setDescription(`Es freut uns, dass ein weiter Student auf diesen Server gefunden hat!
+        .setDescription(`Es freut uns, dass ein weiterer Student auf diesen Server gefunden hat!
                         Wähle jetzt den Studienabschnitt aus, in welchem du dich gerade befindest!`),
 
     semesterSelect: new MessageEmbed()

@@ -18,12 +18,12 @@ module.exports = {
                         Wähle jetzt den Studienabschnitt aus, in welchem du dich gerade befindest!`),
 
     semesterSelect: new MessageEmbed()
-        .setTitle("Semester")
+        .setTitle("Semesterauswahl")
         .setDescription(`Wähle jetzt dein Semester aus!`),
 
     nameSelect: new MessageEmbed()
-        .setTitle("Name")
+        .setTitle("Dein Name")
         .setDescription(`**Antworte jetzt bitte noch mit deinem Vor- und Nachnamen auf diese Nachricht**\n
                         _Wenn du deinen vollen Namen nicht angeben willst,
-                        darfst du auch nur deinen Vornamen oder einen Spitznamen benutzen._`),
+                        darfst du auch nur deinen Vornamen benutzen._`),
 }

@@ -9,7 +9,7 @@ module.exports = {
                         dich auf dem Server (besser) erkennen und du zu deinem Semester passende 
                         Informationen erhältst.\n\n
                         *Deine Angaben werden von diesem Bot weder gespeichert noch auf irgendeine
-                        Weise verarbeitet, du erhältst ledeglich deinen Namen und deine Studiengruppe 
+                        Weise verarbeitet, du erhältst ledeglich deinen Namen und dein Semester 
                         auf unserem Server zugewiesen.*`),
 
     studentSelect: new MessageEmbed()

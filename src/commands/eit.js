@@ -4,6 +4,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions } = require('discord.js');
 
 const { Setup } = require("../eit/setup");
+const {fetchMemberFromUser} = require("../utils");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -51,15 +52,32 @@ module.exports = {
 };
 
 const setup = async (interaction) => {
-    if (interaction.guild.client.eit.activeSetups.has(interaction.member.user.id)) {
+    let member;
+    if(interaction.member === undefined){
+        member = await fetchMemberFromUser(interaction.client, interaction.user)
+        interaction.member === undefined && await interaction.reply(`Can not find your member object!`)
+    }
+    else{
+        member = interaction.member
+    }
+
+    if (interaction.guild.client.eit.activeSetups.has(interaction.user.id)) {
         interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});
         return;
     }
-    interaction.guild.client.eit.activeSetups.set(interaction.member.user.id, new Setup(interaction.member));
+    interaction.guild.client.eit.activeSetups.set(member.id, new Setup(member));
     interaction.reply({content: `Unser Bot sollte dich persönlich angeschrieben haben!`, ephemeral: true});
 }
 
 const changeNickName = async (interaction) => {
+    let member;
+    if(interaction.member === undefined){
+        member = await fetchMemberFromUser(interaction.client, interaction.user)
+        interaction.member === undefined && await interaction.reply(`Can not find your member object!`)
+    }
+    else{
+        member = interaction.member
+    }
     const name = interaction.options.getString('name');
 
     const filter = m => {
@@ -68,7 +86,7 @@ const changeNickName = async (interaction) => {
 
     if (filter(name)){
         try {
-            await interaction.member.setNickname(name)
+            await member.setNickname(name)
             interaction.reply({
                     content: `Dein Name wurde erfolgreich zu ${name} geändert!`,
                     ephemeral: true

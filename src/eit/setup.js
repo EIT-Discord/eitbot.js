@@ -90,6 +90,7 @@ class Setup {
                 await this.user.send(`Es gab ein Problem beim Ändern deines Namens!\n` +
                     `Bitte kontaktiere die Serveradmins um das Problem zu lösen!`);
         })
+        await this.user.send({embeds: [setupEmbed.end]});
     }
 
     async addRole(role) {

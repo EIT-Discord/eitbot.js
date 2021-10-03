@@ -29,7 +29,7 @@ module.exports = {
                         `darfst du auch nur deinen Vornamen benutzen._\n\n` +
                         `Achtung: Deine Eingabe muss mindestens 3 und maximal 32 Zeichen lang sein und darf keine Zahlen enthalten.`),
 
-    nameSelect: new MessageEmbed()
+    end: new MessageEmbed()
     .setTitle("Setup abgeschlossen")
     .setDescription(`**Du hast das Setup erfolgreich abgeschlossen, viel Spaß auf unserem Server!**`),
 }

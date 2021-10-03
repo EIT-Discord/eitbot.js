@@ -4,7 +4,6 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Permissions } = require('discord.js');
 
 const { Setup } = require("../eit/setup");
-const {fetchMemberFromUser} = require("../utils");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,7 +23,16 @@ module.exports = {
                     option.setName('name')
                         .setDescription('Vollständiger Name!')
                         .setRequired(true)))
-        
+
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('modmail')
+                .setDescription('Informiert die Moderatoren über dein Anliegen!')
+                .addStringOption(option =>
+                    option.setName('reason')
+                        .setDescription('Dein Anliegen!')
+                        .setRequired(true)))
+
         .addSubcommand(subcommand =>
             subcommand
                 .setName('semesterstart')
@@ -44,6 +52,10 @@ module.exports = {
                 await changeNickName(interaction);
                 break;
 
+            case 'modmail':
+                await modMail(interaction);
+                break;
+
             case 'semesterstart':
                 await semesterStart(interaction);
                 break;
@@ -52,23 +64,15 @@ module.exports = {
 };
 
 const setup = async (interaction) => {
-    let member = await memberCheck(interaction);
-
-    if (member === undefined){
-        await interaction.reply(`Can not find your member object!`);
+    if (interaction.guild.client.eit.activeSetups.has(interaction.member.user.id)) {
+        interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});
         return;
     }
-    interaction.client.eit.activeSetups.set(member.id, new Setup(member));
+    interaction.guild.client.eit.activeSetups.set(interaction.member.user.id, new Setup(interaction.member));
     interaction.reply({content: `Unser Bot sollte dich persönlich angeschrieben haben!`, ephemeral: true});
 }
 
 const changeNickName = async (interaction) => {
-    let member = await memberCheck(interaction);
-
-    if (member === undefined){
-        await interaction.reply(`Can not find your member object!`);
-        return;
-    }
     const name = interaction.options.getString('name');
 
     const filter = m => {
@@ -77,11 +81,11 @@ const changeNickName = async (interaction) => {
 
     if (filter(name)){
         try {
-            await member.setNickname(name)
+            await interaction.member.setNickname(name)
             interaction.reply({
-                    content: `Dein Name wurde erfolgreich zu ${name} geändert!`,
-                    ephemeral: true
-                })
+                content: `Dein Name wurde erfolgreich zu ${name} geändert!`,
+                ephemeral: true
+            })
         }
         catch (err){
             console.log(err)
@@ -89,20 +93,30 @@ const changeNickName = async (interaction) => {
     }
     else {
         interaction.reply({
-                content: `Es gab ein Problem beim Ändern deines Nicknamens! 
+            content: `Es gab ein Problem beim Ändern deines Nicknamens! 
                 Bitte kontaktiere die Serveradmins um das Problem zu lösen!`,
-                ephemeral: true
+            ephemeral: true
         })
     }
 }
 
-const semesterStart = async interaction => {
-    let member = await memberCheck(interaction);
+const modMail = async interaction => {
+    let text = interaction.options.getString('reason');
+    const moderator = interaction.client.eit.mod;
 
-    if (member === undefined){
-        await interaction.reply(`Can not find your member object!`);
-        return;
-    }
+    await interaction.client.fetchEitMember()
+        .then(members => members.forEach(async member => {
+            if (member.roles.includes(moderator)) {
+                await interaction.guild.members.fetch(member.user.id)
+                    .then(async member => await member.user.send(text))
+            }
+        }))
+
+    await interaction.reply({content: `Dein Anliegen wurde an die Moderatoren weitergeleitet`, ephemeral: true})
+}
+
+const semesterStart = async interaction => {
+
     if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
         interaction.reply({content: 'You do not have the required permissions!', ephemeral: true});
         return;
@@ -127,15 +141,4 @@ const semesterStart = async interaction => {
             }
         }))
     await interaction.reply({content: `Es wurde ein Setupevent für jeden Studenten erstellt!`, ephemeral: true})
-}
-
-const memberCheck = async interaction => {
-    let member;
-    if (interaction.member === undefined){
-        member = await fetchMemberFromUser(interaction.client, interaction.user)
-    }
-    else {
-        member = interaction.member
-    }
-    return member;
 }

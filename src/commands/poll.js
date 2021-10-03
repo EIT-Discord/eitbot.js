@@ -17,9 +17,6 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
-        if(!interaction.channel.partial){
-            return;
-        }
         if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
             interaction.reply({content: 'You do not have the required permissions!', ephemeral: true});
             return;

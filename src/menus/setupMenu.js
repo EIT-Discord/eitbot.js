@@ -1,6 +1,5 @@
 const {MessageSelectMenu} = require("discord.js");
 
-
 module.exports = {
     ID: 'setupMenu',
     studentenAuswahl: new MessageSelectMenu()

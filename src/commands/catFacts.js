@@ -10,13 +10,7 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('fact')
-                .setDescription('Responses with a random cat fact!'))
-
-        .addSubcommand(subcommand =>
-            subcommand
-                .setName('gif')
                 .setDescription('Responses with a random cat fact!')),
-
 
     async execute(interaction) {
         const subCommand = (interaction.options.data[0]);

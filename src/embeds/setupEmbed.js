@@ -11,7 +11,7 @@ module.exports = {
                         *Deine Angaben werden von diesem Bot weder gespeichert noch auf irgendeine
                         Weise verarbeitet, du erhältst ledeglich deinen Namen und dein Semester 
                         auf unserem Server zugewiesen.*\n
-                        Wenn du Schwierigkeiten bei diesem Setup hast, schreibe eine Nachricht an <@324277577235824643> oder <@270615979388698625>`),
+                        Wenn du Schwierigkeiten bei diesem Setup hast, schreibe eine Nachricht an <@324277577235824643> oder <@270615979388698625>`.),
 
     studentSelect: new MessageEmbed()
         .setTitle("Studienabschnitt")

@@ -4,7 +4,7 @@ const {MessageEmbed} = require("discord.js");
 module.exports = {
     start: new MessageEmbed()
         .setTitle("Herzlich Willkommen!")
-        .setDescription(`...auf unserem Elektrotechnik Discord Server! :wave:\n
+        .setDescription(`...auf unserem Discord Server! :wave:\n
                         Dieses Setup ist dafür da, dass wir und deine Kommilitonen
                         dich auf dem Server (besser) erkennen und du zu deinem Semester passende 
                         Informationen erhältst.\n
@@ -14,7 +14,7 @@ module.exports = {
 
     studentSelect: new MessageEmbed()
         .setTitle("Studienabschnitt")
-        .setDescription(`Es freut uns, dass ein weiterer Student auf diesen Server gefunden hat!` + 
+        .setDescription(`Es freut uns, dass ein weiterer Student auf diesen Server gefunden hat!\n` + 
                         `Wähle jetzt den Studienabschnitt aus, in welchem du dich gerade befindest!`),
 
     semesterSelect: new MessageEmbed()

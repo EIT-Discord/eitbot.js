@@ -1,4 +1,7 @@
+const wait = require('util').promisify(setTimeout);
+
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { Permissions } = require('discord.js');
 
 const { Setup } = require("../eit/setup");
 
@@ -27,7 +30,7 @@ module.exports = {
                 .setDescription('Informiert die Moderatoren über dein Anliegen!')
                 .addStringOption(option =>
                     option.setName('reason')
-                        .setDescription('Vollständiger Name!')
+                        .setDescription('Dein Anliegen!')
                         .setRequired(true)))
         
         .addSubcommand(subcommand =>
@@ -56,7 +59,6 @@ module.exports = {
             case 'semesterstart':
                 await semesterStart(interaction);
                 break;
-
         }
     },
 };
@@ -114,6 +116,12 @@ const modMail = async interaction => {
 }
 
 const semesterStart = async interaction => {
+
+    if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+        interaction.reply({content: 'You do not have the required permissions!', ephemeral: true});
+        return;
+    }
+
     const student = interaction.client.eit.student.id;
     let activeSetups = interaction.guild.client.eit.activeSetups;
 
@@ -126,8 +134,10 @@ const semesterStart = async interaction => {
                 await interaction.guild.members.fetch(member.user.id)
 
                     // Create setup event if none exist
-                    .then(async member =>
-                        !activeSetups.has(member.user.id) && activeSetups.set(member.user.id, new Setup(member)))
+                    .then(async member => {
+                        await wait(3000)
+                        !activeSetups.has(member.user.id) && activeSetups.set(member.user.id, new Setup(member))
+                    })
             }
         }))
     await interaction.reply({content: `Es wurde ein Setupevent für jeden Studenten erstellt!`, ephemeral: true})

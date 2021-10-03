@@ -76,7 +76,7 @@ const changeNickName = async (interaction) => {
     const name = interaction.options.getString('name');
 
     const filter = m => {
-        return ((/[A-zÀ-ú$\s]/).test(m.content)) && m.content.length < 32 && m.content.length > 3
+        return ((/[A-zÀ-ú$\s]/).test(m)) && m.length < 32 && m.length > 3
     };
 
     if (filter(name)){

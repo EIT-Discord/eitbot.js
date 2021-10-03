@@ -5,7 +5,7 @@ module.exports = {
     },
     async fetchMemberFromUser(client, user){
         await client.fetchEitMember()
-            .then(members => members.forEach(async member => {
+            .then(members => members.forEach(member => {
                 if (member.user.id === user.id){
                     return member
                 }

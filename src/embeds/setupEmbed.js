@@ -27,4 +27,8 @@ module.exports = {
         .setDescription(`**Antworte jetzt bitte noch mit deinem Vor- und Nachnamen auf diese Nachricht**\n\n` +
                         `_Wenn du deinen vollen Namen nicht angeben willst ` +
                         `darfst du auch nur deinen Vornamen benutzen._`),
+
+    nameSelect: new MessageEmbed()
+    .setTitle("Setup abgeschlossen")
+    .setDescription(`**Du hast das Setup erfolgreich abgeschlossen, viel Spaß auf unserem Server!**`),
 }

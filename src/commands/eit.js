@@ -52,7 +52,7 @@ module.exports = {
 };
 
 const setup = async (interaction) => {
-    let member = memberCheck(interaction);
+    let member = await memberCheck(interaction);
 
     if (member === undefined){
         await interaction.reply(`Can not find your member object!`);
@@ -63,7 +63,7 @@ const setup = async (interaction) => {
 }
 
 const changeNickName = async (interaction) => {
-    let member = memberCheck(interaction);
+    let member = await memberCheck(interaction);
 
     if (member === undefined){
         await interaction.reply(`Can not find your member object!`);
@@ -97,7 +97,7 @@ const changeNickName = async (interaction) => {
 }
 
 const semesterStart = async interaction => {
-    let member = memberCheck(interaction);
+    let member = await memberCheck(interaction);
 
     if (member === undefined){
         await interaction.reply(`Can not find your member object!`);

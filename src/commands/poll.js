@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {MessageSelectMenu, MessageActionRow} = require("discord.js");
+const {MessageSelectMenu, MessageActionRow, Permissions} = require("discord.js");
 
 const binaryButton =  require("../buttons/binaryButton");
 
@@ -17,6 +17,10 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        if (!interaction.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+            interaction.reply({content: 'You do not have the required permissions!', ephemeral: true});
+            return;
+        }
         // Check for existing polls
         if (interaction.guild.client.eit.polls.has(interaction.member.user.id)) {
             interaction.reply({content: 'Es gibt bereits ein aktives Setup-Event!', ephemeral: true});

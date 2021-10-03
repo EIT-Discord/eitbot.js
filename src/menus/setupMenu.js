@@ -100,14 +100,14 @@ module.exports = {
 
         if (setup === undefined) {
             await interaction.update({
-                content: `Diese Setupinstanz ist ungültig!\n Bitte führe nochmal den Befehl /eit setup aus!`,
+                content: `Diese Setupinstanz ist ungültig!\nBitte führe nochmal den Befehl /eit setup aus!`,
                 components: []
             })
         }
         else {
             try {
                 await interaction.update({
-                    content: `${choice} wurde ausgewählt!`,
+                    content: `Du hast ${choice} ausgewählt!`,
                     components: []
                 })
                     .then(setup.choice(choice))

@@ -5,8 +5,8 @@ module.exports = {
     start: new MessageEmbed()
         .setTitle("Herzlich Willkommen!")
         .setDescription(`...auf unserem Elektrotechnik Discord Server! :wave:  \n\n
-                        Dieses Setup ist dafür da, damit wir und deine Kommilitonen
-                        dich auf dem Server (besser) erkennen und du zu deiner Gruppe passende 
+                        Dieses Setup ist dafür da, dass wir und deine Kommilitonen
+                        dich auf dem Server (besser) erkennen und du zu deinem Semester passende 
                         Informationen erhältst.\n\n
                         *Deine Angaben werden von diesem Bot weder gespeichert noch auf irgendeine
                         Weise verarbeitet, du erhältst ledeglich deinen Namen und deine Studiengruppe 

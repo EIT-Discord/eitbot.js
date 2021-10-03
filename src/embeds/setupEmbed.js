@@ -26,7 +26,8 @@ module.exports = {
         .setTitle("Dein Name")
         .setDescription(`**Antworte jetzt bitte noch mit deinem Vor- und Nachnamen auf diese Nachricht**\n\n` +
                         `_Wenn du deinen vollen Namen nicht angeben willst ` +
-                        `darfst du auch nur deinen Vornamen benutzen._`),
+                        `darfst du auch nur deinen Vornamen benutzen._\n\n` +
+                        `Achtung: Deine Eingabe muss mindestens 3 und maximal 32 Zeichen lang sein und darf keine Zahlen enthalten.`),
 
     nameSelect: new MessageEmbed()
     .setTitle("Setup abgeschlossen")

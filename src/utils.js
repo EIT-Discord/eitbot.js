@@ -4,12 +4,12 @@ module.exports = {
         return '```' + string + '```';
     },
     async fetchMemberFromUser(client, user){
-        await client.fetchEitMember()
-            .then(members => members.forEach(member => {
-                if (member.user.id === user.id){
-                    return member
-                }
-            }))
+        let members = await client.fetchEitMember()
+        for(let member of members){
+            if(member.user.id === user.id){
+                return member
+            }
+        }
     }
 };
 

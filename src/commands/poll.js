@@ -11,9 +11,9 @@ module.exports = {
             option.setName('number')
                 .setDescription('Number of questions: 2-5')
                 .setRequired(true))
-        .addChannelOption(option =>
-            option.setName('channel')
-                .setDescription('Select your target channel!')
+        .addIntegerOption(option =>
+            option.setName('duration')
+                .setDescription('Duration of the poll')
                 .setRequired(true)),
 
     async execute(interaction) {
@@ -33,15 +33,16 @@ module.exports = {
             return;
         }
         // Check for valid text channel
-        let targetChannel = interaction.options.getChannel('channel');
+        let targetChannel = interaction.channel
         if (!targetChannel.isText()) {
             interaction.reply({content: 'Not a valid text channel!', ephemeral: true});
             return;
         }
         // Create new poll and add to map
         let user = interaction.member.user;
-        let poll = new Poll(interaction.client, user, questionNumber, targetChannel)
-        interaction.guild.client.eit.activeSetups.set(user.id, poll);
+        let duration = interaction.options.getInteger('duration');
+        let poll = new Poll(interaction.client, user, questionNumber, targetChannel, duration)
+        interaction.guild.client.eit.polls.set(user.id, poll);
         await interaction.reply({content: 'Poll creation has been started!', ephemeral: true});
     }
 }

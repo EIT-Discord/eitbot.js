@@ -1,10 +1,10 @@
 {
   "roles": [
     "Gast",
-    "Student",
     "Professor",
+    "Alumni",
     "Interessent",
-    "Moderator",
+    "Master",
     "1. Semester",
     "2. Semester",
     "3. Semester",
@@ -13,12 +13,9 @@
     "6. Semester",
     "7. Semester"
   ],
-
-  "channels": [
-    "kalender",
-    "hm-feed",
-    "botlog"
-  ]
+  "student": "Student",
+  "mod": "Moderator",
+  "logChannel": "botlog"
 }
 
 

@@ -31,20 +31,23 @@ function parseRoles(client, guild){
                 client.eit.roles.set(config.roles[roleIdx], role)
                 break;
             }
+            else if (config.mod === role.name){
+                client.eit.mod = role
+            }
+            else if (config.student === role.name){
+                client.eit.student = role
+            }
         }
     }
 }
 
 function parseChannels(client, guild, channels){
-    for (let channelIdx in config.channels)
+    for (let channel of channels.values())
     {
-        for (let channel of channels.values())
+        if (config.logChannel === channel.name)
         {
-            if (config.channels[channelIdx] === channel.name)
-            {
-                client.eit.channels.set(config.channels[channelIdx], channel)
-                break;
-            }
+            client.eit.logChannel = channel;
+            break;
         }
     }
 }

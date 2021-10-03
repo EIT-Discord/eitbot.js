@@ -106,10 +106,16 @@ module.exports = {
             })
         }
         else {
-            await interaction.update({
-                content: `${choice} wurde ausgewählt!`,
-                components: []
-            }).then(setup.choice(choice))
+            try {
+                await interaction.update({
+                    content: `${choice} wurde ausgewählt!`,
+                    components: []
+                })
+                    .then(setup.choice(choice))
+            }
+            catch (err){
+                console.log(err)
+            }
         }
     }
 }

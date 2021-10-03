@@ -2,8 +2,6 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { Setup } = require("../eit/setup");
 
-
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('eit')
@@ -31,6 +29,7 @@ module.exports = {
                     option.setName('reason')
                         .setDescription('Vollständiger Name!')
                         .setRequired(true)))
+        
         .addSubcommand(subcommand =>
             subcommand
                 .setName('semesterstart')
@@ -61,7 +60,6 @@ module.exports = {
         }
     },
 };
-
 
 const setup = async (interaction) => {
     if (interaction.guild.client.eit.activeSetups.has(interaction.member.user.id)) {
@@ -102,7 +100,7 @@ const changeNickName = async (interaction) => {
 
 const modMail = async interaction => {
     let text = interaction.options.getString('reason');
-    const moderator = interaction.client.eit.roles.get('Moderator').id;
+    const moderator = interaction.client.eit.mod;
 
     await interaction.client.fetchEitMember()
         .then(members => members.forEach(async member => {
@@ -116,7 +114,7 @@ const modMail = async interaction => {
 }
 
 const semesterStart = async interaction => {
-    const student = interaction.client.eit.roles.get('Student').id;
+    const student = interaction.client.eit.student.id;
     let activeSetups = interaction.guild.client.eit.activeSetups;
 
     // Fetch all guild members directly from discord via get request

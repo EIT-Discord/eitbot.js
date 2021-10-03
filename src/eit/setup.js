@@ -12,15 +12,22 @@ class Setup {
     }
 
     async init () {
-        await this.sendMenu(setupMenu.rollenAuswahl, [setupEmbed.start]);
+        const row = new MessageActionRow()
+            .addComponents(setupMenu.rollenAuswahl)
+
+        await this.user.send({components: [row],embeds: [setupEmbed.start]})
+            .catch(() => {
+                this.client.eit.logChannel.send(`${this.user} could not receive the setup dialog!`);
+                this.removeSetupEvent()
+            })
     }
 
     async choice (choice) {
         switch (choice) {
             case 'Student':
-                await this.sendMenu(setupMenu.studentenAuswahl, [setupEmbed.studentSelect]);
                 await this.removeRoles();
-                await this.addRole(choice);
+                await this.member.roles.add(this.client.eit.student);
+                await this.sendMenu(setupMenu.studentenAuswahl, [setupEmbed.studentSelect]);
                 break;
 
             case 'Gast':
@@ -28,9 +35,9 @@ class Setup {
             case 'Interessent':
             case 'Master':
             case 'Alumni':
-                await this.changeName([setupEmbed.nameSelect]);
                 await this.removeRoles();
                 await this.addRole(choice);
+                await this.changeName([setupEmbed.nameSelect]);
                 this.removeSetupEvent()
                 break;
 
@@ -49,8 +56,8 @@ class Setup {
             case '5. Semester':
             case '6. Semester':
             case '7. Semester':
-                await this.changeName([setupEmbed.nameSelect]);
                 await this.addRole(choice);
+                await this.changeName([setupEmbed.nameSelect]);
                 this.removeSetupEvent()
                 break;
         }
@@ -75,33 +82,34 @@ class Setup {
         const name = await this.user.dmChannel.awaitMessages({filter, max: 1})
             .then(m => {return m.first().content});
 
-        try {
-            await this.member.setNickname(name)
-            this.user.send(`Dein Nickname wurde erfolgreich zu ${name} geändert!`)
-        }
-        catch (err){
-            this.user.send(`Es gab ein Problem beim Ändern deines Namens!\n` +
-                `Bitte kontaktiere die Serveradmins um das Problem zu lösen!`)
-            console.log(err);
-        }
+        await this.member.setNickname(name)
+            .then(async () => await this.user.send(`Dein Nickname wurde erfolgreich zu ${name} geändert!`))
+            .catch(async () => {
+                await this.client.eit.logChannel.send(`${this.user}: Could not change nickname!`);
+                await this.user.send(`Es gab ein Problem beim Ändern deines Namens!\n` +
+                    `Bitte kontaktiere die Serveradmins um das Problem zu lösen!`);
+        })
     }
 
     async addRole(role) {
-        try{
+        try {
             await this.member.roles.add(this.client.eit.roles.get(role))
         }
-        catch (err){
-            console.log(err);
+        catch (err) {
+            this.client.eit.logChannel.send(`${this.user}: Could not add the role ${role}`)
         }
     }
 
     async removeRoles() {
-        try{
-            Array.from(this.client.eit.roles.values())
-                .forEach(role => this.member.roles.remove(role));
-        }
-        catch (err){
-            console.log(err);
+        for (let role of Array.from(this.client.eit.roles.values())) {
+            if (this.member._roles.includes(role.id)) {
+                try {
+                    await this.member.roles.remove(role.id)
+                }
+                catch (err){
+                    this.client.eit.logChannel.send(`${this.user}: Could not remove the role ${role}`)
+                }
+            }
         }
     }
 

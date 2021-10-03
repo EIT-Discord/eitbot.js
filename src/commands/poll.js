@@ -154,13 +154,13 @@ class Poll {
 
     async sendPollEmbed () {
         let answerFields = []
-        let barNumber = 40;
+        let barNumber = 20;
 
         answerFields.push({name: 'Anzahl der Teilnehmer', value: `${this.data.votes.count}`})
         for(let answer of this.data.answers.values()){
             let answerCount = this.data.votes.answerCount.get(answer)
             let percent = answerCount/this.data.votes.count
-            let voteBar = Math.floor(percent * barNumber)
+            let voteBar = Math.ceil(percent * barNumber)
             let answerBar = '▓'.repeat(voteBar) + '░'.repeat(barNumber - voteBar)
             let voteString = (answerCount === 1) ? 'Stimme' : 'Stimmen'
             answerFields.push({name: answer,

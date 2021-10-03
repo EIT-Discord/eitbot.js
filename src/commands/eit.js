@@ -93,8 +93,7 @@ const changeNickName = async (interaction) => {
     }
     else {
         interaction.reply({
-            content: `Es gab ein Problem beim Ändern deines Nicknamens! 
-                Bitte kontaktiere die Serveradmins um das Problem zu lösen!`,
+            content: `Es gab ein Problem beim Ändern deines Nicknamens!`,
             ephemeral: true
         })
     }

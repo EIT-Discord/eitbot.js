@@ -26,15 +26,6 @@ module.exports = {
 
         .addSubcommand(subcommand =>
             subcommand
-                .setName('modmail')
-                .setDescription('Informiert die Moderatoren über dein Anliegen!')
-                .addStringOption(option =>
-                    option.setName('reason')
-                        .setDescription('Dein Anliegen!')
-                        .setRequired(true)))
-
-        .addSubcommand(subcommand =>
-            subcommand
                 .setName('semesterstart')
                 .setDescription('Sendet das Setupevent an jeden Studenten!')),
 
@@ -50,10 +41,6 @@ module.exports = {
 
             case 'name':
                 await changeNickName(interaction);
-                break;
-
-            case 'modmail':
-                await modMail(interaction);
                 break;
 
             case 'semesterstart':
@@ -99,20 +86,6 @@ const changeNickName = async (interaction) => {
     }
 }
 
-const modMail = async interaction => {
-    let text = interaction.options.getString('reason');
-    const moderator = interaction.client.eit.mod;
-
-    await interaction.client.fetchEitMember()
-        .then(members => members.forEach(async member => {
-            if (member.roles.includes(moderator)) {
-                await interaction.guild.members.fetch(member.user.id)
-                    .then(async member => await member.user.send(text))
-            }
-        }))
-
-    await interaction.reply({content: `Dein Anliegen wurde an die Moderatoren weitergeleitet`, ephemeral: true})
-}
 
 const semesterStart = async interaction => {
 

@@ -100,7 +100,7 @@ module.exports = {
 
         if (setup === undefined) {
             await interaction.update({
-                content: `Diese Setupinstanz ist ungültig!`,
+                content: `Diese Setupinstanz ist ungültig!\n Bitte führe nochmal den Befehl /eit setup aus!`,
                 components: []
             })
         }

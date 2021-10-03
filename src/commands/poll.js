@@ -13,7 +13,7 @@ module.exports = {
                 .setRequired(true))
         .addIntegerOption(option =>
             option.setName('duration')
-                .setDescription('Duration of the poll')
+                .setDescription('Duration of the poll in minutes')
                 .setRequired(true)),
 
     async execute(interaction) {
@@ -40,7 +40,7 @@ module.exports = {
         }
         // Create new poll and add to map
         let user = interaction.member.user;
-        let duration = interaction.options.getInteger('duration');
+        let duration = interaction.options.getInteger('duration') * 60 * 10**3;
         let poll = new Poll(interaction.client, user, questionNumber, targetChannel, duration)
         interaction.guild.client.eit.polls.set(user.id, poll);
         await interaction.reply({content: 'Poll creation has been started!', ephemeral: true});

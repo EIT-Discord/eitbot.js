@@ -31,5 +31,5 @@ module.exports = {
 
     end: new MessageEmbed()
     .setTitle("Setup abgeschlossen")
-    .setDescription(`**Du hast das Setup erfolgreich abgeschlossen, viel Spaß auf unserem Server!**`),
+    .setDescription(`Du hast das Setup erfolgreich abgeschlossen, viel Spaß auf unserem Server!`),
 }

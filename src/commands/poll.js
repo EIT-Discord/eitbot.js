@@ -9,7 +9,7 @@ module.exports = {
         .setDescription('Starts an interactive poll creation!')
         .addIntegerOption(option =>
             option.setName('number')
-                .setDescription('Number of questions: 2-5')
+                .setDescription('Number of answers: 2-5')
                 .setRequired(true))
         .addIntegerOption(option =>
             option.setName('duration')

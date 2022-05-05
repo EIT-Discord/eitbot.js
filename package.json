@@ -10,15 +10,15 @@
   "license": "GPLv3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YannicBreiting/eitbot.js.git"
+    "url": "git+https://github.com/EIT-Discord/eitbot.js.git"
   },
   "bugs": {
-    "url": "https://github.com/YannicBreiting/eitbot.js/issues"
+    "url": "https://github.com/EIT-Discord/eitbot.js/issues"
   },
-  "homepage": "https://github.com/YannicBreiting/eitbot.js#readme",
+  "homepage": "https://github.com/EIT-Discord/eitbot.js#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
-    "@discordjs/rest": "^0.1.0-canary.0",
+    "@discordjs/builders": "^0.13.0",
+    "@discordjs/rest": "^0.4.1",
     "axios": "^0.21.4",
     "discord.js": "^13.1.0",
     "googleapis": "^39.2.0"

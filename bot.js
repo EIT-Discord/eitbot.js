@@ -4,7 +4,7 @@ const { Client, Collection, Intents } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-const { clientId, guildId, token } = require('./src/config.json');
+const { clientId, guildId, token } = require('./config.json');
 const {initParseEitConfig} = require('./src/eit/configParser')
 
 

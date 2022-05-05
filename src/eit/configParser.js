@@ -1,5 +1,5 @@
 const configFile = require('./guildConfig.json');
-const {guildId} = require("../config.json");
+const {guildId} = require("../../config.json");
 
 
 const config = JSON.parse(JSON.stringify(configFile));
